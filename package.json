@@ -5,12 +5,20 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "node server/server.js"
   },
   "dependencies": {
+    "@types/node": "^14.0.13",
     "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
     "bootstrap-vue": "^2.15.0",
     "core-js": "^3.6.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongodb": "^3.5.8",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.25",
     "vue": "^2.6.11",
     "vue-form": "^4.10.3",
     "vue-loader": "^15.9.2",
@@ -24,7 +32,10 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "ts-node": "3.3.0",
+    "@types/node": "^8.0.29",
+    "typescript": "3.3.3333"
   },
   "eslintConfig": {
     "root": true,
@@ -44,5 +55,6 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "type": "module"//I added this to use import but in that way require is not defined so think about other way to wprk in your node files, please
 }

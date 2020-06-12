@@ -3,7 +3,8 @@
         <div class="form-group col-md-4">
             <form>
                 <div v-for="(value, filter) in filters" :key="filter">
-                    <label>{{filter}}</label>
+<!--                                                                toCapitalize-->
+                    <label>{{filter==='with_genres'? 'Genres': filter[0].toUpperCase()+filter.slice(1, filter.length)}}</label>
                     <select id="" class="form-control" :name="filter" @change="changeFilter">
                         <option selected name="defaultSelect">Choose...</option>
                         <option v-for="(i, index) in value" :key="`${filter}${index}}`">{{i}}</option>

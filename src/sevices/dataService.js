@@ -4,33 +4,24 @@ class DataService {
     BASE_URI = 'https://api.themoviedb.org/3/';
     API = 'api_key=0c0abc3a3afe095e5248a68a605f2a0f';
 
-    discover(sortBy = 'release_date.asc'){
+    discover(filters, sortBy = 'release_date.asc'){
         //'https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0c0abc3a3afe095e5248a68a605f2a0f'
-        const url = `${this.BASE_URI}discover/movie?sort_by=${sortBy}&include_adult=false&${this.API}`
-        // console.log(url)
-        return axios.get(url)
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                throw error
-            })
+        console.log('filters: ', filters)
+        let filterString = ``
+        for (const i in filters) {
+            console.log('a: ', i, filters[i])
+            filterString += `&${i}=${filters[i]}`
+        }
+        const url = `${this.BASE_URI}discover/movie?sort_by=${sortBy}&include_adult=false${filterString}&${this.API}`
+        console.log(url)
+        return this.axiosCall(url)
     }
 
-    //year, genre, region
-
     getMovie(id) {
-        console.log('gettinfMovie', id)
         id = parseInt(id)
         const url = `${this.BASE_URI}movie/${id}?${this.API}`
         // console.log(url)
-        return axios.get(url)
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                throw error
-            })
+        return this.axiosCall(url)
     }
 
     search(searchTxt) {
@@ -41,13 +32,7 @@ class DataService {
             }
             const url = `${this.BASE_URI}search/movie?${this.API}&query=${searchTxt}&page=1`
             // console.log(url)
-            return axios.get(url)
-                .then(response => {
-                    return response
-                })
-                .catch(error => {
-                    throw error
-                })
+            return this.axiosCall(url)
         }
         else{
             return []
@@ -58,6 +43,16 @@ class DataService {
         //https://api.themoviedb.org/3/movie/{movie_id}/similar?api_key=0c0abc3a3afe095e5248a68a605f2a0f&language=en-US&page=1
         const url = `${this.BASE_URI}movie/${id}/similar?${this.API}&page=1`
         // console.log(url)
+        return this.axiosCall(url)
+    }
+
+    getGenres(lang= 'en-US') {
+        //https://api.themoviedb.org/3/genre/movie/list?api_key=0c0abc3a3afe095e5248a68a605f2a0f&language=en-US
+        const url = `${this.BASE_URI}genre/movie/list?${this.API}&language=${lang}`;
+        return this.axiosCall(url)
+    }
+
+    axiosCall(url) {
         return axios.get(url)
             .then(response => {
                 return response

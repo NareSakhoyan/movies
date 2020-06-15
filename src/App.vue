@@ -7,7 +7,6 @@
 
 <script>
 import Header from './components/Header'
-import auth from './utils/auth'
 
 
 export default {

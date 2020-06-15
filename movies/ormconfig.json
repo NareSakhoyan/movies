@@ -1,6 +1,9 @@
 {
    "type": "mongodb",
+   "host": "localhost",
+   "port": "27017",
    "database": "test",
+   "useUnifiedTopology": true,
    "synchronize": true,
    "logging": false,
    "entities": [

@@ -22,6 +22,6 @@ export class User {
     pass: string
 
     @Column()
-    bookmarks: []
+    bookmarks: any
 
 }

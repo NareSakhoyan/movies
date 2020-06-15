@@ -55,6 +55,5 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ],
-  "type": "module"//I added this to use import but in that way require is not defined so think about other way to wprk in your node files, please
+  ]
 }

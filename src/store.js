@@ -1,6 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import DataService from "./sevices/dataService";
+import UserService from "./sevices/userService";
 
 Vue.use(Vuex)
 
@@ -18,7 +19,9 @@ const store = new Vuex.Store({
             year: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
             region: ['US']
         },
-        genreGroups: []
+        genreGroups: [],
+        currentUser: {},
+        loggedIn: false,
     },
     mutations: {
         setType(state, payload) {
@@ -33,9 +36,19 @@ const store = new Vuex.Store({
             state.movieID = payload
         },
 
+        setCurrentUser(state, payload) {
+            state.currentUser = payload
+            state.currentUser['bookmarks'] = []
+        },
+
+        emptyMoviesList(state) {
+          state.movieList = []
+        },
+
         async setDataFromAPI(state) {
             if (state.type === 'getMovie') {
                 state.movieDetails = (await DataService[state.type](state.search)).data;
+                console.log('movieDetails: ', state.movieDetails)
             }
             else if (state.type === 'getGenres') {
                 state.genreGroups = (await DataService[state.type](state.search)).data.genres;
@@ -44,12 +57,90 @@ const store = new Vuex.Store({
             else {
                 state.movieList = (await DataService[state.type](state.search)).data.results;
             }
+        },
+
+        addMovieToMovieList(state) {
+            console.log('addMovieToMovieList ', state.movieDetails)
+            state.movieList.push(state.movieDetails)
+        },
+
+        //make automated login
+        addUserToDatabase(state) {
+            console.log(state.currentUser)
+            UserService.create(state.currentUser)
+                .then(response => {
+                    state.currentUser.id = response.data.id;
+                    console.log(response.data)
+                })
+                .catch(e => {
+                    console.log(e)
+                });
+            state.currentUser = {}
+        },
+
+        findUserByEmail(state) {
+            UserService.findByEmail(state.currentUser.email)
+                .then((response) => {
+                    let myData = response.data
+                    console.log(response.data)
+                  if (myData.pass === state.currentUser.password){
+                      console.log('password is correct')
+                      state.loggedIn = true
+                      state.currentUser = myData
+                  }
+                  else {
+                    state.loggedIn = false
+                  }
+
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        },
+
+        logout(state) {
+            state.loggedIn = false
+        },
+
+        updateBookMark (state) {
+            console.log('updatefrom state')
+            UserService.updateUser(state.currentUser)
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
         }
+
     },
     actions: {
-
         getDataFromAPI() {
             store.commit('setDataFromAPI')
+        },
+
+        addUserToDatabase() {
+            store.commit('addUserToDatabase')
+        },
+
+        findUserByEmail() {
+            store.commit('findUserByEmail')
+        },
+
+        logoutInStore() {
+            store.commit('logout')
+        },
+
+        updateBookMark() {
+            store.commit('updateBookMark')
+        },
+
+        addMovieToMovieList() {
+            store.commit('addMovieToMovieList')
+        },
+
+        emptyMoviesList() {
+            store.commit('emptyMoviesList')
         }
     },
     getters: {

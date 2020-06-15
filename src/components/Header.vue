@@ -12,7 +12,6 @@
                         <li class="nav-item active">
                             <router-link class="nav-link" to="/">
                                 Home <span class="sr-only">(current)</span>
-<!--                                <a class="nav-link" href="#"></a>-->
                             </router-link>
                         </li>
                         <li class="nav-item">
@@ -38,6 +37,14 @@
                         <router-link :to="`/search/${searchText}`">
                             <button class="btn btn-outline-success my-2 my-sm-0" type="submit" @click="handleSearch">Search</button>
                         </router-link>
+                        <router-link  v-if="loggedIn" v-bind:to="`/profile`">
+                            <a class="navbar-brand">
+                                <img src="../assets/profile.png" width="30" height="30" alt="" loading="lazy">
+                            </a>
+                        </router-link>
+                        <router-link v-if="loggedIn" to="/logout"><button type="button" class="btn btn-success" @click="logout()">Log out</button></router-link>
+                        <router-link v-if="!loggedIn" to="/login"><button type="button" class="btn btn-success loginButton">Log in</button></router-link>
+                        <router-link v-if="!loggedIn" to="/register"><button type="button" class="btn btn-primary">Sign Up</button></router-link>
                     </form>
                 </div>
             </nav>
@@ -46,7 +53,8 @@
 </template>s
 
 <script>
-
+    import {mapActions} from 'vuex'
+    import auth from "../utils/auth";
 
     export default {
         name: "Header",
@@ -64,13 +72,22 @@
                 set: function (e) {
                     this.$store.commit('setSearch', e)
                 }
+            },
+            loggedIn() {
+                return this.$store.state.loggedIn
             }
         },
         methods: {
+            ...mapActions(['logoutInStore']),
             handleSearch() {
                 this.$store.commit('setMovieList');
-            }
+            },
+            logout(){
+                this.logoutInStore()
+                auth.logout()
+            },
         },
+
     }
 </script>
 

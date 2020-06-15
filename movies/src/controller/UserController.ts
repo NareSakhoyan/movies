@@ -1,10 +1,10 @@
-import {getRepository} from "typeorm";
+import {getMongoRepository, getRepository} from "typeorm";
 import {NextFunction, Request, Response} from "express";
 import {User} from "../entity/User";
 
 export class UserController {
 
-    private userRepository = getRepository(User);
+    private userRepository = getMongoRepository(User);
 
     async all(request: Request, response: Response, next: NextFunction) {
         if (Object.keys(request.query).length) {
@@ -25,6 +25,13 @@ export class UserController {
     async remove(request: Request, response: Response, next: NextFunction) {
         let userToRemove = await this.userRepository.findOne(request.params.id);
         await this.userRepository.remove(userToRemove);
+    }
+
+    async update(request: Request, response: Response, next: NextFunction) {
+        let id = request.body.id
+        let userToUpdate = request.body
+       return await this.userRepository.update(id, {bookmarks: userToUpdate.bookmarks});
+
     }
 
 }

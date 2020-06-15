@@ -1,14 +1,13 @@
-import userService from "../sevices/userService";
 
 export default {
-    login (email, pass, cb) {
+    login (state, cb) {
         cb = arguments[arguments.length - 1]
         if (localStorage.token) {
             if (cb) cb(true)
             this.onChange(true)
             return
         }
-        pretendRequest(email, pass, (res) => {
+        pretendRequest(state, (res) => {
             if (res.authenticated) {
                 localStorage.token = res.token
                 if (cb) cb(true)
@@ -38,32 +37,18 @@ export default {
     onChange () {}
 }
 
-function pretendRequest (emailParam, passParam, cb) {
-    console.log('finding by email')
-    userService.findWithEmail(emailParam)
-        .then(response => {
-            let tmp = response.data[0];
-            if (tmp){
-                const {id, email, pass} = tmp;
-                setTimeout(() => {
-                    if (emailParam === email && passParam === pass) {
-                        cb({
-                            authenticated: true,
-                            token: Math.random().toString(36).substring(7).slice(0, 5).concat(id)
-                        })
-                    } else {
-                        cb({ authenticated: false })
-                    }
-                }, 0)
-                console.log(response.data);
-            }
-            else {
-                cb({ authenticated: false })
-            }
-
-        })
-        .catch(e => {
-            console.log(e)
-        })
+function pretendRequest (state, cb) {
+    setTimeout(() => {
+        console.log('state.loggedIn: ', state.loggedIn)
+        if (state.loggedIn) {
+            cb({
+                authenticated: true,
+                token: Math.random().toString(36).substring(7)
+                // token: 56465465
+            })
+        } else {
+            cb({ authenticated: false })
+        }
+    }, 0)
 
 }

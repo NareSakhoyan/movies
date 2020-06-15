@@ -9,7 +9,7 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Password</label>
-                    <input v-model="pass" type="password" class="form-control" id="exampleInputPassword1">
+                    <input v-model="password" type="password" class="form-control" id="exampleInputPassword1">
                     <small id="emailHelp" class="form-text text-muted">(hint: password1)</small>
                 </div>
                 <p v-if="error" class="error">Your email or password is incorrect</p>
@@ -21,23 +21,30 @@
 
 <script>
     import auth from '../utils/auth'
+    import {mapActions} from 'vuex'
     export default {
         data () {
             return {
                 email: '',
-                pass: '',
+                password: '',
                 error: false
             }
         },
         methods: {
+            ...mapActions(['findUserByEmail']),
             login () {
-                auth.login(this.email, this.pass, loggedIn => {
-                    if (!loggedIn) {
-                        this.error = true
-                    } else {
-                        this.$router.replace(this.$route.query.redirect || '/')
-                    }
-                })
+                this.$store.commit('setCurrentUser', {email: this.email, password: this.password})
+                this.findUserByEmail()
+               setTimeout(() => {
+                   auth.login(this.$store.state, loggedIn => {
+                       console.log('loggedIn: ', loggedIn)
+                       if (!loggedIn) {
+                           this.error = true
+                       } else {
+                           this.$router.replace(this.$route.query.redirect || '/')
+                       }
+                   })
+               }, 100)
             }
         }
     }

@@ -40,7 +40,7 @@
 </template>
 
 <script>
-    import UserService from "../sevices/userService";
+    import {mapActions} from 'vuex'
 
     export default {
         name: "Register",
@@ -57,22 +57,18 @@
             };
         },
         methods: {
+            ...mapActions(['addUserToDatabase']),
             saveUser() {
-                let data = {
-                    name: this.user.name,
-                    surname: this.user.surname,
-                    email: this.user.email,
-                    phone: this.user.phone,
-                    pass: this.user.pass,
-                };
-                UserService.create(data)
-                    .then(response => {
-                        this.user.id = response.data.id;
-                        console.log(response.data)
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    });
+                // let user = {
+                //     name: this.user.name,
+                //     surname: this.user.surname,
+                //     email: this.user.email,
+                //     phone: this.user.phone,
+                //     pass: this.user.pass,
+                // };
+                //maybe this.user?
+               this.$store.commit('setCurrentUser', this.user)
+                this.addUserToDatabase()
             }
         },
         mounted() {

@@ -27,10 +27,10 @@ const routes = [
     {path: '/', name: 'home', component: HomePage},
     {path: '/register', name: 'register', component: RegisterPage},
     {path: '/login', name: 'login', component: LoginPage, beforeEnter: requireAuth},
-    {path: '/profile', name: 'profile', component: ProfilePage},
+    {path: '/profile', name: 'profile', component: ProfilePage, beforeEnter: requireAuth},
     {path: '/search/:search?', name: 'search', component: SearchPage},
     {path: '/movie/:id', name: 'movie-details', component: MoviePage},
-    {path: '*', redirect: HomePage},
+    {path: '*', redirect: {name: 'home'}},
 ]
 
 const router = new VueRouter({

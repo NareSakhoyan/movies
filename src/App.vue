@@ -14,17 +14,7 @@ export default {
   name: 'App',
   components: {
     Header
-  },
-  data () {
-    return {
-      loggedIn: auth.loggedIn(),
-    }
-  },
-  created () {
-    auth.onChange = loggedIn => {
-      this.loggedIn = loggedIn
-    }
-  },
+  }
 }
 </script>
 

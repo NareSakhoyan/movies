@@ -30,7 +30,7 @@
                 <div class="form-group row">
                     <label for="password" class="col-sm-2 col-form-label">Password: </label>
                     <div class="col-sm-10">
-                        <input v-model="user.pass" type="password" class="form-control" id="password" placeholder="password">
+                        <input v-model="user.password" type="password" class="form-control" id="password" placeholder="password">
                     </div>
                 </div>
                 <router-link to="/login"><button type="button" class="btn btn-primary" @click="saveUser">Sign Up</button></router-link>
@@ -52,7 +52,7 @@
                     surname: '',
                     email: '',
                     phone: '',
-                    pass: '',
+                    password: '',
                 },
             };
         },

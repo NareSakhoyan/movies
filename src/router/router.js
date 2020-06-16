@@ -6,19 +6,26 @@ import SearchPage from '../pages/SearchPage'
 import RegisterPage from '../pages/RegisterPage'
 import LoginPage from '../pages/LoginPage'
 import ProfilePage from '../pages/ProfilePage'
-import auth from "../utils/auth";
+// import auth from "../utils/auth";
+import store from "../store/store";
 
 Vue.use(VueRouter)
-
+console.log('store: ', store)
 function requireAuth(to, from, next) {
-    if (!auth.loggedIn){
+    console.log('redirectL ', store.state.loggedIn)
+    let c = false
+    if (c){
+    // if (!store.state.loggedIn){
         next({
             path: '/login',
             query: {redirect: to.fullPath}
         })
     }
     else{
-        next()
+        next({
+            path: '/',
+            query: {redirect: to.fullPath}
+        })
     }
 }
 

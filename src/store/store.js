@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import DataService from "./sevices/dataService";
-import UserService from "./sevices/userService";
+import DataService from "../sevices/dataService";
+import UserService from "../sevices/userService";
 
 Vue.use(Vuex)
 
@@ -22,6 +22,9 @@ const store = new Vuex.Store({
         genreGroups: [],
         currentUser: {},
         loggedIn: false,
+        authOptions: [
+
+        ]
     },
     mutations: {
         setType(state, payload) {
@@ -79,27 +82,19 @@ const store = new Vuex.Store({
         },
 
         findUserByEmail(state) {
-            UserService.findByEmail(state.currentUser.email)
-                .then((response) => {
-                    let myData = response.data
-                    console.log(response.data)
-                  if (myData.pass === state.currentUser.password){
-                      console.log('password is correct')
-                      state.loggedIn = true
-                      state.currentUser = myData
-                  }
-                  else {
-                    state.loggedIn = false
-                  }
-
+            UserService.login({email: state.currentUser.email, password: state.currentUser.password})
+                .then(response => {
+                    state.loggedIn = true
+                    console.log('response: ', response)
                 })
                 .catch(e => {
-                    console.log(e)
+                    console.log('Error: ', e)
                 })
         },
 
         logout(state) {
             state.loggedIn = false
+            delete state.authOptions.Authorization
         },
 
         updateBookMark (state) {

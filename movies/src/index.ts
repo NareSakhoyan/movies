@@ -19,7 +19,8 @@ createConnection()
             oriqin: 'http://localhost:8080'
         }
         // Call midlewares
-        app.use(cors(this.corsOptions));
+        // @ts-ignore
+        app.use(cors(corsOptions));
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({
             extended: true

@@ -19,7 +19,19 @@ export class User {
 
     @Column()
     // @Length(4, 20)
+    name: string;
+
+    @Column()
+    // @Length(4, 20)
+    surname: string;
+
+    @Column()
+    // @Length(4, 20)
     email: string;
+
+    @Column()
+        // @Length(4, 20)
+    phone: string;
 
     @Column()
     // @Length(4, 100)
@@ -29,14 +41,15 @@ export class User {
     // @IsNotEmpty()
     role: string;
 
+    @Column()
+    bookmarks: any;
+
 
     hashPassword() {
-        console.log('hashing pass', this.password)
         this.password = bcrypt.hashSync(this.password, 8);
     }
 
     checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
-        console.log(this.password)
         return bcrypt.compareSync(unencryptedPassword, this.password);
     }
 }

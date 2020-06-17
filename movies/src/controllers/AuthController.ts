@@ -10,6 +10,7 @@ class AuthController {
     static login = async (req: Request, res: Response) => {
         //Check if email and password are set
         let { email, password } = req.body;
+        console.log("email: ", email, "pass: ", password)
         if (!(email && password)) {
             res.status(400).send();
         }
@@ -19,28 +20,28 @@ class AuthController {
         let user: User;
         try {
             user = await userRepository.findOneOrFail({ where: { email } });
-            console.log('user: ', user);
         } catch (error) {
+            console.log('this')
             res.status(401).send();
         }
 
         //Check if encrypted password match
         if (!user.checkIfUnencryptedPasswordIsValid(password)) {
+            console.log('that')
             res.status(401).send();
             return;
         }
 
-        //Sing JWT, valid for 1 hour
+        //Sing JWT, valid for 1 day
         const token = jwt.sign(
-            { userID: user.id, email: user.email },
+            { userID: user.id, email: user.email, name: user.name },
             config.jwtSecret,
-            { expiresIn: "1h" }
+            { expiresIn: "1d"}
         );
 
-        console.log(token)
 
         //Send the jwt in the response
-        res.send(token);
+        res.send({token: token, userDetails: {user}});
     };
 
     static changePassword = async (req: Request, res: Response) => {

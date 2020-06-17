@@ -14,6 +14,8 @@
                             </div>
                             <div class="col-1" v-if="loggedIn">
                                 <img :src="bookmarkIcon" alt="bookmark" class="bookmarkImg" @click="bookmarkClick">
+<!--                                <img src="../assets/bookmark.jpg" alt="bookmark" class="bookmarkImg" @click="bookmarkClick">-->
+<!--                                <img src="../assets/bookmarked.jpg" alt="bookmark" class="bookmarkImg" @click="bookmarkClick">-->
                             </div>
                         </div>
                         <h5 class="card-text">{{movieDetails.tagline}}</h5>
@@ -40,7 +42,7 @@
 <script>
     import RelatedMovies from "../components/RelatedMovies";
     import {mapActions} from 'vuex'
-
+//i don't know where, but currentUser becomes undefined, maybe when adding bookmark, check store line 109, good luck
     export default {
         name: "MoviePage",
         components: {
@@ -61,11 +63,8 @@
             loggedIn() {
                 return this.$store.state.loggedIn
             },
-            isBookmarked() {
-                if (this.loggedIn){
-                    return this.$store.state.currentUser.bookmarks.includes(this.id)
-                }
-                return ''
+            currentUser() {
+                return this.$store.state.currentUser
             },
             bookmarkIcon () {
                 if (this.loggedIn){
@@ -80,10 +79,11 @@
                     }
                 }
                 return ''
-            }
+            },
+
         },
         methods: {
-            ...mapActions(['getDataFromAPI', 'updateBookMark']),
+            ...mapActions(['getDataFromAPI', 'updateBookMark', 'getUserByID']),
             getImgUrl (url) {
                 return `https://image.tmdb.org/t/p/w200${url}`
             },
@@ -96,6 +96,7 @@
                 return txt.substring(0, txt.length-2)
             },
             updatePage() {
+                this.getUserByID()
                 // this.$store.commit('setMovieID', id);
                 this.$store.commit('setSearch', this.id);
                 this.$store.commit('setType', 'getMovie');
@@ -115,22 +116,26 @@
             },
             bookmarkClick(e) {
                 console.log(e)
-                let bookmarksArr = this.$store.state.currentUser.bookmarks
-                console.log(this.id)
-                // bookmarksArr.length = 0
-                // console.log(this.$store.state.currentUser.bookmarks)
-                if (this.isBookmarked) {
-                    bookmarksArr.splice(bookmarksArr.findIndex(i => {i == this.id}), 1)
+                let bookmarksArr = this.currentUser.bookmarks
+                console.log('bookmarks: ', this.currentUser)
+                if (this.isBookmarked()) {
+                    bookmarksArr.splice(bookmarksArr.findIndex(
+                        i => {i == this.id}), 1)
                 }
                 else{
                     bookmarksArr.push(this.id)
                 }
                 this.updateBookMark()
-                // console.log('e.srcElement.src: ', e.srcElement.src)
-                // e.srcElement.src = 'http://localhost:8080'+this.bookmarkIcon
-                console.log('currentUse', this.$store.state.currentUser)
-            }
-
+                console.log('currentUser: ', this.$store.state.currentUser)
+            },
+            isBookmarked() {
+                // console.log('-----------------------', this.currentUser)
+                if (this.loggedIn){
+                    console.log('isBOOkmarked:  ', this.currentUser)
+                    return this.currentUser.bookmarks.includes(this.id)
+                }
+                return ''
+            },
         },
         mounted() {
             this.updatePage()

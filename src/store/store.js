@@ -22,9 +22,7 @@ const store = new Vuex.Store({
         genreGroups: [],
         currentUser: {},
         loggedIn: false,
-        authOptions: [
-
-        ]
+        auth: localStorage.token || ''
     },
     mutations: {
         setType(state, payload) {
@@ -39,7 +37,12 @@ const store = new Vuex.Store({
             state.movieID = payload
         },
 
+        setLoggedIn(state) {
+            state.loggedIn = !!localStorage.token
+        },
+
         setCurrentUser(state, payload) {
+            // console.log('payload: ', payload)
             state.currentUser = payload
             state.currentUser['bookmarks'] = []
         },
@@ -81,10 +84,16 @@ const store = new Vuex.Store({
             state.currentUser = {}
         },
 
-        findUserByEmail(state) {
+        login(state) {
+            console.log("logining")
             UserService.login({email: state.currentUser.email, password: state.currentUser.password})
                 .then(response => {
                     state.loggedIn = true
+                    state.auth = response.data.token
+                    state.currentUser = response.data.userDetails.user
+                    console.log(state.currentUser)
+                    localStorage.setItem('userID', state.currentUser.id)
+                    localStorage.setItem('token', response.data.token)
                     console.log('response: ', response)
                 })
                 .catch(e => {
@@ -93,15 +102,28 @@ const store = new Vuex.Store({
         },
 
         logout(state) {
-            state.loggedIn = false
-            delete state.authOptions.Authorization
+            state.auth = ''
+            delete localStorage.token
         },
 
         updateBookMark (state) {
             console.log('updatefrom state')
             UserService.updateUser(state.currentUser)
                 .then(response => {
+                    state.currentUser = response.data
                     console.log(response)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        },
+
+        getUserByID(state) {
+            UserService.getUserByID(localStorage.getItem('userID'))
+                .then(response => {
+                    state.currentUser = response.data
+                    console.log('aaaaaaaa:', response)
+                    console.log('state.currentUser: ', state.currentUser)
                 })
                 .catch(e => {
                     console.log(e)
@@ -118,12 +140,13 @@ const store = new Vuex.Store({
             store.commit('addUserToDatabase')
         },
 
-        findUserByEmail() {
-            store.commit('findUserByEmail')
+        login() {
+            store.commit('login')
         },
 
         logoutInStore() {
             store.commit('logout')
+            store.commit('setLoggedIn')
         },
 
         updateBookMark() {
@@ -136,6 +159,10 @@ const store = new Vuex.Store({
 
         emptyMoviesList() {
             store.commit('emptyMoviesList')
+        },
+
+        getUserByID() {
+            store.commit('getUserByID')
         }
     },
     getters: {

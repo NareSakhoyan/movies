@@ -1,4 +1,5 @@
 import http from '../http-common'
+// import config from "../../movies/src/config/config";
 
 class UserService {
     getAllUsers() {
@@ -6,19 +7,15 @@ class UserService {
     }
 
     create(user) {
-        return http.post('/user', user)
+        return http.post('/user/', user)
     }
 
     getUserByID(id) {
-        return http.get('/users/:id', id)
+        return http.get(`/user/${id}`)
     }
 
-    // findByEmail(email) {
-    //     return http.get(`/users/?email=${email}`)
-    // }
-
     updateUser(user) {
-        return http.put(`/users`, user)
+        return http.put(`/user/${user.id}`, user)
     }
 
     login(user) {

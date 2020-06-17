@@ -7,38 +7,48 @@ import { User } from "../entity/User";
 class UserController{
 
     static listAll = async (req: Request, res: Response) => {
-        console.log(req)
         //Get users from database
         const userRepository = getRepository(User);
         const users = await userRepository.find({
-            select: ["id", "email", "password"] //We dont want to send the passwords on response
+            select: ["id", "email", "name", "surname", "phone", "bookmarks", "password"] //We dont want to send the passwords on response
         });
         //Send the users object
         res.send(users);
     };
 
     static getOneById = async (req: Request, res: Response) => {
+
         //Get the ID from the url
-        const id: number = parseInt(req.params.id);
+        const id = req.params.id;
+
+        if (id != res.locals.jwtPayload.userID){
+            res.status(401).send("Unauthorized");
+            return;
+        }
 
         //Get the user from database
         const userRepository = getRepository(User);
         try {
             const user = await userRepository.findOneOrFail(id, {
-                select: ["id", "email", "role"] //We dont want to send the password on response
+                select: ["id", "email", "name", "surname", "phone", "bookmarks"] //We dont want to send the passwords on response
             });
+            res.send(user)
         } catch (error) {
             res.status(404).send("User not found");
         }
     };
 
     static newUser = async (req: Request, res: Response) => {
-        console.log("I am adding new user")
+        console.log('newUserCalled')
         //Get parameters from the body
-        let { email, password, role, name } = req.body;
+        let { email, password, name, surname, phone, bookmarks } = req.body;
         let user = new User();
         user.email = email;
         user.password = password;
+        user.name = name;
+        user.surname = surname;
+        user.phone = phone;
+        user.bookmarks = bookmarks || [];
         // @ts-ignore
         user.username = '';
         // user.role = role;
@@ -52,15 +62,12 @@ class UserController{
 
         //Hash the password, to securely store on DB
         user.hashPassword();
-
         //Try to save. If fails, the email is already in use
         const userRepository = getRepository(User);
         try {
-            console.log('iamsaving', user)
-            // await userRepository.save({'username': 'asd', 'email': 'gyulk', 'password': 'asd'})
             await userRepository.save(user)
         } catch (e) {
-            console.log('error: ', e);//doesn't print
+            console.log(e);
             res.status(409).send("email already in use");
             return;
         }
@@ -70,9 +77,11 @@ class UserController{
     };
 
     static editUser = async (req: Request, res: Response) => {
+        console.log('editiiiiing')
         //Get the ID from the url
         const id = req.params.id;
 
+        console.log('id: ', id)
         //Get values from the body
         const { email, role } = req.body;
 
@@ -100,7 +109,6 @@ class UserController{
         try {
             await userRepository.save(user);
         } catch (e) {
-            console.log('kjh', e)
             res.status(409).send("email already in use");
             return;
         }

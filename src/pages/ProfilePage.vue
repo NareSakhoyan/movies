@@ -9,8 +9,8 @@
                    </div>
                </div>
                <div class="form-group row">
-                   <label class="col-sm-2 col-form-label">Surname: </label>
-                   <div class="col-sm-10">
+                   <label class="col-sm-3 col-form-label">Surname: </label>
+                   <div class="col-sm-9">
                        <input type="text" readonly class="form-control-plaintext" :value="currentUser.surname">
                    </div>
                </div>
@@ -57,10 +57,12 @@
         },
         created() {
             this.setBookmarksList()
-        }
+        },
     }
 </script>
 
 <style scoped>
-
+    .profile {
+        margin: 100px;
+    }
 </style>

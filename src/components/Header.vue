@@ -87,6 +87,9 @@
                 auth.logout()
             },
         },
+        beforeMount() {
+            this.$store.commit('setLoggedIn')
+        }
 
     }
 </script>

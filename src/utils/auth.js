@@ -44,7 +44,6 @@ function pretendRequest (state, cb) {
             cb({
                 authenticated: true,
                 token: Math.random().toString(36).substring(7)
-                // token: 56465465
             })
         } else {
             cb({ authenticated: false })

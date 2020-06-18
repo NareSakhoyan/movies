@@ -1,24 +1,29 @@
 import http from '../http-common'
+// import config from "../../movies/src/config/config";
 
 class UserService {
     getAllUsers() {
-        return http.get('/users')
+        return http.get('/user')
     }
 
     create(user) {
-        return http.post('/users', user)
+        return http.post('/user/', user)
     }
 
     getUserByID(id) {
-        return http.get('/users/:id', id)
-    }
-
-    findByEmail(email) {
-        return http.get(`/users/?email=${email}`)
+        return http.get(`/user/${id}`)
     }
 
     updateUser(user) {
-        return http.put(`/users/`, user)
+        return http.put(`/user/${user.id}`, user)
+    }
+
+    login(user) {
+        return http.post('/auth/login', user)
+    }
+
+    async getMe(user) {
+        return await http.get('/user/me', user)
     }
 }
 

@@ -6,19 +6,18 @@ import SearchPage from '../pages/SearchPage'
 import RegisterPage from '../pages/RegisterPage'
 import LoginPage from '../pages/LoginPage'
 import ProfilePage from '../pages/ProfilePage'
-import auth from "../utils/auth";
 
 Vue.use(VueRouter)
-
 function requireAuth(to, from, next) {
-    if (!auth.loggedIn){
+    if (localStorage.token){
+        next()
+    }
+    else{
+        console.log('go login')
         next({
             path: '/login',
             query: {redirect: to.fullPath}
         })
-    }
-    else{
-        next()
     }
 }
 
@@ -26,7 +25,8 @@ function requireAuth(to, from, next) {
 const routes = [
     {path: '/', name: 'home', component: HomePage},
     {path: '/register', name: 'register', component: RegisterPage},
-    {path: '/login', name: 'login', component: LoginPage, beforeEnter: requireAuth},
+    {path: '/login', name: 'login', component: LoginPage},
+    {path: '/logout', redirect: {name: 'home'}},
     {path: '/profile', name: 'profile', component: ProfilePage, beforeEnter: requireAuth},
     {path: '/search/:search?', name: 'search', component: SearchPage},
     {path: '/movie/:id', name: 'movie-details', component: MoviePage},

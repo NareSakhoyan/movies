@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import DataService from "./sevices/dataService";
-import UserService from "./sevices/userService";
+import DataService from "../sevices/dataService";
+import UserService from "../sevices/userService";
 
 Vue.use(Vuex)
 
@@ -36,19 +36,25 @@ const store = new Vuex.Store({
             state.movieID = payload
         },
 
+        setLoggedIn(state) {
+            state.loggedIn = !!localStorage.token
+        },
+
         setCurrentUser(state, payload) {
             state.currentUser = payload
             state.currentUser['bookmarks'] = []
         },
 
         emptyMoviesList(state) {
-          state.movieList = []
+            state.movieList = []
         },
 
         async setDataFromAPI(state) {
+            console.log('type: ', state.type)
+            console.log('search: ', state.search)
             if (state.type === 'getMovie') {
                 state.movieDetails = (await DataService[state.type](state.search)).data;
-                console.log('movieDetails: ', state.movieDetails)
+                store.commit('addMovieToMovieList')
             }
             else if (state.type === 'getGenres') {
                 state.genreGroups = (await DataService[state.type](state.search)).data.genres;
@@ -60,17 +66,14 @@ const store = new Vuex.Store({
         },
 
         addMovieToMovieList(state) {
-            console.log('addMovieToMovieList ', state.movieDetails)
             state.movieList.push(state.movieDetails)
         },
 
         //make automated login
         addUserToDatabase(state) {
-            console.log(state.currentUser)
             UserService.create(state.currentUser)
                 .then(response => {
                     state.currentUser.id = response.data.id;
-                    console.log(response.data)
                 })
                 .catch(e => {
                     console.log(e)
@@ -78,39 +81,46 @@ const store = new Vuex.Store({
             state.currentUser = {}
         },
 
-        findUserByEmail(state) {
-            UserService.findByEmail(state.currentUser.email)
-                .then((response) => {
-                    let myData = response.data
-                    console.log(response.data)
-                  if (myData.pass === state.currentUser.password){
-                      console.log('password is correct')
-                      state.loggedIn = true
-                      state.currentUser = myData
-                  }
-                  else {
-                    state.loggedIn = false
-                  }
-
+        login(state) {
+            UserService.login({email: state.currentUser.email, password: state.currentUser.password})
+                .then(response => {
+                    state.loggedIn = true
+                    state.currentUser = response.data.userDetails.user
+                    localStorage.setItem('userID', state.currentUser.id)
+                    localStorage.setItem('token', response.data.token)
                 })
                 .catch(e => {
-                    console.log(e)
+                    console.log('Error: ', e)
                 })
         },
 
         logout(state) {
-            state.loggedIn = false
+            state.auth = ''
+            delete localStorage.token
         },
 
         updateBookMark (state) {
-            console.log('updatefrom state')
             UserService.updateUser(state.currentUser)
                 .then(response => {
-                    console.log(response)
+                    state.currentUser.bookmarks = response.data.bookmarks
                 })
                 .catch(e => {
                     console.log(e)
                 })
+        },
+
+        getUserByID(state) {
+            UserService.getUserByID(localStorage.getItem('userID'))
+                .then(response => {
+                    state.currentUser = response.data
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        },
+
+        me(state, payload) {
+            state.currentUser = payload;
         }
 
     },
@@ -123,12 +133,13 @@ const store = new Vuex.Store({
             store.commit('addUserToDatabase')
         },
 
-        findUserByEmail() {
-            store.commit('findUserByEmail')
+        login() {
+            store.commit('login')
         },
 
         logoutInStore() {
             store.commit('logout')
+            store.commit('setLoggedIn')
         },
 
         updateBookMark() {
@@ -141,6 +152,15 @@ const store = new Vuex.Store({
 
         emptyMoviesList() {
             store.commit('emptyMoviesList')
+        },
+
+        getUserByID() {
+            store.commit('getUserByID')
+        },
+
+        async me({commit}) {
+            const response = (await UserService.getMe()).data
+            commit('me', response);
         }
     },
     getters: {

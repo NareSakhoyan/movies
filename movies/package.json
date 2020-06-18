@@ -15,7 +15,9 @@
       "body-parser": "^1.18.1"
    },
    "scripts": {
-      "start": "ts-node src/index.ts",
-      "dev": "nodemon src/index.ts"
+      "dev": "nodemon src/index.ts",
+      "tsc": "tsc",
+      "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
+      "prod": "tsc && node ./build/app.js"
    }
 }

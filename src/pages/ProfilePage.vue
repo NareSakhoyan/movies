@@ -9,8 +9,8 @@
                    </div>
                </div>
                <div class="form-group row">
-                   <label class="col-sm-2 col-form-label">Surname: </label>
-                   <div class="col-sm-10">
+                   <label class="col-sm-3 col-form-label">Surname: </label>
+                   <div class="col-sm-9">
                        <input type="text" readonly class="form-control-plaintext" :value="currentUser.surname">
                    </div>
                </div>
@@ -42,25 +42,27 @@
         },
         methods: {
             ...mapActions(['addMovieToMovieList', 'emptyMoviesList', 'getDataFromAPI']),
-            setBookmarksList() {
+            async setBookmarksList() {
                 this.emptyMoviesList()
-                const bookmarks = this.currentUser.bookmarks
-                console.log('bookmarks: ', bookmarks)
+                const bookmarks = this.$store.state.currentUser.bookmarks
                 for (const i in bookmarks) {
-                    console.log('movies: ', i)
                     this.$store.commit('setSearch', bookmarks[i])
                     this.$store.commit('setType', 'getMovie')
-                    this.getDataFromAPI()
-                    this.addMovieToMovieList()
+                    await this.getDataFromAPI()
                 }
           }
         },
-        created() {
+        mounted() {
             this.setBookmarksList()
+        },
+        updated() {
+            this.emptyMoviesList()
         }
     }
 </script>
 
 <style scoped>
-
+    .profile {
+        margin: 100px;
+    }
 </style>

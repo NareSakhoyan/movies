@@ -30,7 +30,7 @@
                 <div class="form-group row">
                     <label for="password" class="col-sm-2 col-form-label">Password: </label>
                     <div class="col-sm-10">
-                        <input v-model="user.pass" type="password" class="form-control" id="password" placeholder="password">
+                        <input v-model="user.password" type="password" class="form-control" id="password" placeholder="password">
                     </div>
                 </div>
                 <router-link to="/login"><button type="button" class="btn btn-primary" @click="saveUser">Sign Up</button></router-link>
@@ -52,21 +52,13 @@
                     surname: '',
                     email: '',
                     phone: '',
-                    pass: '',
+                    password: '',
                 },
             };
         },
         methods: {
             ...mapActions(['addUserToDatabase']),
             saveUser() {
-                // let user = {
-                //     name: this.user.name,
-                //     surname: this.user.surname,
-                //     email: this.user.email,
-                //     phone: this.user.phone,
-                //     pass: this.user.pass,
-                // };
-                //maybe this.user?
                this.$store.commit('setCurrentUser', this.user)
                 this.addUserToDatabase()
             }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
-import {getMongoRepository, getRepository} from "typeorm";
+import { getRepository } from "typeorm";
 import { validate } from "class-validator";
 
 import { User } from "../entity/User";
@@ -21,13 +21,11 @@ class AuthController {
         try {
             user = await userRepository.findOneOrFail({ where: { email } });
         } catch (error) {
-            console.log('this')
             res.status(401).send();
         }
 
         //Check if encrypted password match
         if (!user.checkIfUnencryptedPasswordIsValid(password)) {
-            console.log('that')
             res.status(401).send();
             return;
         }

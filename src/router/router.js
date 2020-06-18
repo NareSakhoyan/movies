@@ -10,7 +10,6 @@ import ProfilePage from '../pages/ProfilePage'
 Vue.use(VueRouter)
 function requireAuth(to, from, next) {
     if (localStorage.token){
-        console.log('goProfile')
         next()
     }
     else{

@@ -9,7 +9,6 @@ class DataService {
         console.log('filters: ', filters)
         let filterString = ``
         for (const i in filters) {
-            console.log('a: ', i, filters[i])
             filterString += `&${i}=${filters[i]}`
         }
         const url = `${this.BASE_URI}discover/movie?sort_by=${sortBy}&include_adult=false${filterString}&${this.API}`

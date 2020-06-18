@@ -13,12 +13,14 @@
         name: "moviesList",
         data() {
             return {
-                hasDataObj: {
-                    poster_path: "/jwl71Qa8YS7fJXR7Z6AHSsHWLRi.jpg",
-                    id: 503,
-                    overview: "A packed cruise ship traveling the Atlantic is hit and overturned by a massive wave, compelling the passengers to begin a dramatic fight for their lives.",
-                    title: "Poseidon"
-                }
+                hasDataObj: new Object(
+                    {
+                        poster_path: "/jwl71Qa8YS7fJXR7Z6AHSsHWLRi.jpg",
+                        id: 503,
+                        overview: "A packed cruise ship traveling the Atlantic is hit and overturned by a massive wave, compelling the passengers to begin a dramatic fight for their lives.",
+                        title: "Poseidon"
+                    }
+                )
             }
         },
         components: {
@@ -27,7 +29,7 @@
         computed: {
             moviesList() {
                 let tmp = this.$store.state.movieList
-                tmp.unshift(this.hasDataObj)
+                // tmp.unshift(Object(this.hasDataObj))
                 return tmp
             }
         },

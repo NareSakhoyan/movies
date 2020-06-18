@@ -19,12 +19,16 @@ class UserController{
     static getOneById = async (req: Request, res: Response) => {
 
         //Get the ID from the url
-        const id = req.params.id;
+        // const id = req.params.id;
 
-        if (id != res.locals.jwtPayload.userID){
-            res.status(401).send("Unauthorized");
-            return;
-        }
+        // if (id != res.locals.jwtPayload.userID){
+        //     res.status(401).send("Unauthorized");
+        //     return;
+        // }
+
+        const id = res.locals.jwtPayload.userID
+
+        const email = '';
 
         //Get the user from database
         const userRepository = getRepository(User);
@@ -83,7 +87,7 @@ class UserController{
 
         console.log('id: ', id)
         //Get values from the body
-        const { email, role } = req.body;
+        const { email, bookmarks, role } = req.body;
 
         //Try to find user on database
         const userRepository = getRepository(User);
@@ -98,7 +102,8 @@ class UserController{
 
         //Validate the new values on model
         user.email = email;
-        user.role = role;
+        user.bookmarks = bookmarks
+        // user.role = role;
         const errors = await validate(user);
         if (errors.length > 0) {
             res.status(400).send(errors);
@@ -113,7 +118,7 @@ class UserController{
             return;
         }
         //After all send a 204 (no content, but accepted) response
-        res.status(204).send();
+        res.status(200).send({bookmarks: user.bookmarks});
     };
 
     static deleteUser = async (req: Request, res: Response) => {

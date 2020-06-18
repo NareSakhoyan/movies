@@ -21,6 +21,10 @@ class UserService {
     login(user) {
         return http.post('/auth/login', user)
     }
+
+    async getMe(user) {
+        return await http.get('/user/me', user)
+    }
 }
 
 export default new UserService()

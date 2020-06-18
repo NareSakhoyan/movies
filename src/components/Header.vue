@@ -66,8 +66,15 @@
         computed: {
             searchText: {
                 get: function () {
-                    return '';
-                    // return this.$store.state.search;
+                    let text = this.$store.state.search
+                    if (!isNaN(parseInt(text))){
+                        text = parseInt(text)
+                    }
+                    if (typeof text === "number" || typeof text === "object"){
+                        return ''
+                    }
+                    console.log(444, typeof text == "number")
+                    return  text;
                 },
                 set: function (e) {
                     this.$store.commit('setSearch', e)
@@ -78,9 +85,9 @@
             }
         },
         methods: {
-            ...mapActions(['logoutInStore']),
+            ...mapActions(['logoutInStore', 'getDataFromAPI']),
             handleSearch() {
-                this.$store.commit('setMovieList');
+                this.$route.params.search = this.searchText
             },
             logout(){
                 this.logoutInStore()

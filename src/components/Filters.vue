@@ -37,13 +37,6 @@
         },
         methods: {
             ...mapActions(['getDataFromAPI']),
-            makeObjectFromArray(obj) {
-                let tmp = {}
-                for (let i in obj) {
-                    tmp[i] = ''
-                }
-                return tmp
-            },
             changeFilter (e) {
                 let value = e.target.value
                 if (value === 'Choose...') return ;
@@ -63,18 +56,14 @@
             },
             setFiltersValueChoose() {
                 let selects = [...document.getElementsByName('defaultSelect')]
-                // selects.pop()
                 for (const i in selects) {
-                    console.log('i: ', i)
                     selects[i]['selected'] = true
                 }
             }
         },
-        created() {
+        mounted() {
             this.$store.commit('setType', 'getGenres')
             this.getDataFromAPI()
-        },
-        mounted() {
         },
     }
 </script>
@@ -88,6 +77,3 @@
         margin-top: 15px;
     }
 </style>
-
-//login, addToFfAVORITES
-//PROFILE IMAGE, INFO, FAVORITEfILMS

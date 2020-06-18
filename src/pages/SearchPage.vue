@@ -1,5 +1,8 @@
 <template>
     <div class="search">
+        <div v-if="!searchParameterFromRoute">
+            <h3 align="center">You can search what you want</h3>
+        </div>
         <MoviesList/>
     </div>
 </template>
@@ -15,29 +18,38 @@
         },
         data() {
             return {
-                searchTxt: this.$route.params.searchTxt,
+                // searchTxt: this.$route.params.searchTxt,
             }
         },
         computed: {
+            searchParameterFromRoute() {
+                // return this.$route.params.search
+                return this.$route.params.search || this.$store.state.search
+            }
         },
         methods: {
             ...mapActions(['getDataFromAPI']),
-        },
-        mounted() {
-            const { search } = this.$route.params
-            if(search) {
-                this.$store.commit('setSearch', search);
-                //I couldn't get data from props so I committed separately
-                this.$store.commit('setType', 'search');
-                this.getDataFromAPI()
+            searchFunction() {
+                const search = this.searchParameterFromRoute
+                if(search) {
+                    this.$store.commit('setSearch', search);
+                    this.$store.commit('setType', 'search');
+                    this.getDataFromAPI()
+                }
             }
         },
+        mounted() {
+            console.log('searchMounted')
+            this.searchFunction()
+        },
         updated() {
-
+            this.searchFunction()
         }
     }
 </script>
 
 <style scoped>
-
+    .search {
+        margin: 100px;
+    }
 </style>

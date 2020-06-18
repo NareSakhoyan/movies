@@ -2,12 +2,18 @@ import { Router } from "express";
 import UserController from "../controllers/UserController";
 import { checkJwt } from "../middlewares/checkJwt";
 import { checkRole } from "../middlewares/checkRole";
+import AuthController from "../controllers/AuthController";
+import {User} from "../entity/User";
 
 const router = Router();
 
 //Get all users
 router.get("/",  UserController.listAll);
 // router.get("/", [checkJwt, checkRole(["ADMIN"])], UserController.listAll);
+
+//getbytoken
+router.get("/me", [checkJwt], UserController.getOneById);
+
 
 // Get one user
 router.get(

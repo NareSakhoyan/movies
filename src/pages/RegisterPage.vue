@@ -59,14 +59,6 @@
         methods: {
             ...mapActions(['addUserToDatabase']),
             saveUser() {
-                // let user = {
-                //     name: this.user.name,
-                //     surname: this.user.surname,
-                //     email: this.user.email,
-                //     phone: this.user.phone,
-                //     pass: this.user.pass,
-                // };
-                //maybe this.user?
                this.$store.commit('setCurrentUser', this.user)
                 this.addUserToDatabase()
             }

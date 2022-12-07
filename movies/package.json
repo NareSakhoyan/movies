@@ -11,8 +11,8 @@
       "typeorm": "0.2.25",
       "reflect-metadata": "^0.1.10",
       "mongodb": "^3.0.8",
-      "express": "^4.15.4",
-      "body-parser": "^1.18.1"
+      "express": "^4.18.2",
+      "body-parser": "^1.20.1"
    },
    "scripts": {
       "dev": "nodemon src/index.ts",
